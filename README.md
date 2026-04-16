@@ -6,7 +6,7 @@
 **Core Gameplay:**
 - Fixed timer per round, words appear and the player types them
 - Each correctly typed word = chips
-- Streak multiplier: for the nth consecutive correct word, mult += n
+- Streak multiplier: for every consecutive correct word, mult += 1
 - Typo = miss, which penalizes mult (halve or similar, exact formula TBD for balancing)
 - Final score = chips × mult (per-word vs end-of-round calculation still undecided)
 
