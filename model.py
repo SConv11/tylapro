@@ -4,12 +4,19 @@ import words
 import string
 
 def onAppStart(app):
-    startGame(app)
+    app.gameStarted = False
     app.stepsPerSecond = constants.stepsPerSecond
+
+
 
 def startGame(app):
     # generate the run (bosses)
+    app.runIndex = 0
+    app.money = 0
     app.gameOver = False
+
+    startRound(app)
+    
 
 def startRound(app):
     app.currentInput = '' # current word typed
@@ -36,6 +43,11 @@ def onStep(app):
         app.timeLeft -= 1/app.stepsPerSecond
         if app.timeLeft <= 0.01: app.roundEnded = True
 
+def onMousePress(app, mouseX, mouseY):
+    if not app.gameStarted: # on home page
+        if app.width//2-200/2 <= mouseX <= app.width//2+200/2:
+            if 600-75/2 <= mouseY <= 600+75/2:
+                app.gameStarted = True
 
 def onKeyPress(app, key):
 
