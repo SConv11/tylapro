@@ -1,4 +1,13 @@
 from cmu_graphics import *
+import model
+import constants
+
+upperBound = int(227*0.8)
+lowerBound = int(931*0.8)
+leftBound = int(184*0.8)
+rightBound = int(1303*0.8)+1
+boardWidth = rightBound - leftBound
+boardHeight = lowerBound - upperBound
 
 def redrawAll(app):
     drawBackground(app)
@@ -6,12 +15,12 @@ def redrawAll(app):
     if not app.gameStarted:
         drawHome(app)  
     else:
-        if app.roundStarted and not app.roundEnded:
-            drawRound(app)
-        elif app.roundEnded:
+        if app.shopStarted:
             drawShop(app)
         elif app.gameOver:
             drawScore(app)
+        elif app.roundStarted: 
+            drawRound(app)
 
 def drawBackground(app):
     drawImage('static/background.png', 0, 0, width=app.width, height=app.height)
@@ -28,7 +37,14 @@ def drawHome(app):
 
 
 def drawRound(app):
-    # top bar, timer as a shrinking bar, chips, mult
+    # top bar, timer as a shrinking bar
+    drawLine(leftBound, upperBound+5, 
+             leftBound + boardWidth * app.timeLeft / constants.timerLen,  upperBound+5, 
+             fill = 'black', lineWidth = 10)
+    
+
+
+    # chips, mult
     # word row, cursor
     # cursor, vector, animation
     # change line

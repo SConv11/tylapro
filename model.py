@@ -2,10 +2,14 @@ import cmu_graphics
 import constants
 import words
 import string
+import time
 
 def onAppStart(app):
     app.gameStarted = False
     app.stepsPerSecond = constants.stepsPerSecond
+    app.roundStarted = False
+    app.shopStarted = False
+    app.gameOver = False
 
 
 
@@ -19,6 +23,7 @@ def startGame(app):
     
 
 def startRound(app):
+
     app.currentInput = '' # current word typed
     app.currentIndex = 0 # index of current word typing (+=1 when spacebar pressed)
     app.timeLeft = constants.timerLen # in second
@@ -29,35 +34,41 @@ def startRound(app):
     app.streak = 0
     app.mult = 1
 
-    app.roundStarted = False # Type to start
-    app.roundEnded = False
-    app.gameOver = False
+    app.timerStarted = False # Type to start
 
     app.words = words.generateWordList(100)
+
+    app.roundStarted = True
     
     
 # if round ends, wait for some time and get to the shop
 
-def onStep(app):
-    if app.roundStarted and not app.roundEnded:
+def onStep(app):    
+    if app.roundStarted and app.timerStarted:
         app.timeLeft -= 1/app.stepsPerSecond
-        if app.timeLeft <= 0.01: app.roundEnded = True
+        if app.timeLeft <= 0.01: 
+            time.sleep(1)
+            app.roundStarted = False
 
 def onMousePress(app, mouseX, mouseY):
     if not app.gameStarted: # on home page
         if app.width//2-200/2 <= mouseX <= app.width//2+200/2:
             if 600-75/2 <= mouseY <= 600+75/2:
                 app.gameStarted = True
+                startGame(app)
 
+
+'''
+MAKE SURE YOU ARE USING ENGLISH KEYBOARD
+'''
 def onKeyPress(app, key):
-
     # control + backspace
     # long press backspace
 
     # backspace is locked after confirming a word (i.e. pressing space)
 
-    if not app.roundStarted and not app.roundEnded:
-        app.roundStarted = True
+    if app.roundStarted and not app.timerStarted:
+        app.timerStarted = True
 
     if key == 'space':
 
