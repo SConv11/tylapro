@@ -62,7 +62,6 @@ def onKeyPress(app, key):
 '''
 Change balance (mult) here
 '''
-
 def checkWord(app):
     if app.currentInput == app.words[app.currentIndex]: 
         app.chips += constants.chipsPerWord

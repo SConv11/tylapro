@@ -1,16 +1,18 @@
-# Wordbanks are taken directly from https://github.com/monkeytypegame/monkeytype
+# Wordbanks (.json files in the repo) 
+# are taken directly from https://github.com/monkeytypegame/monkeytype
 
 import json
 import random
+
 
 def generateWordList(numWords, hard=False, punc = False) -> list[str]:
 
     if hard: filename = 'english_5k.json'
     else: filename = 'english.json'
-
+    
+    # Partly from Claude, as I am not familiar with json and random methods. 
     with open(filename, 'r') as f:
         wordbank = json.load(f)["words"]
-
     res = random.choices(wordbank, k=numWords)
 
     if punc:
