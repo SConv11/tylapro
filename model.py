@@ -28,7 +28,7 @@ def startRound(app):
     app.currentIndex = 0 # index of current word typing (+=1 when spacebar pressed)
     app.timeLeft = constants.timerLen # in second
     app.mistakeNum = 0
-    app.mistakes = [] # index wrong words
+    app.mistakes = dict() # index wrong words
     
     app.chips = 0
     app.streak = 0
@@ -37,9 +37,24 @@ def startRound(app):
     app.timerStarted = False # Type to start
 
     app.words = words.generateWordList(100)
-
+    app.lines = splitIntoLines(app.words, 700, constants.charWidth)
+    
     app.roundStarted = True
     
+def splitIntoLines(words, boardWidth, charWidth):
+    currentLine = []
+    res = []
+    currentWidth = 0
+    for word in words:
+        currentWidth += (len(word) + 1) * charWidth
+        if currentWidth <= boardWidth: currentLine.append(word)
+        else: 
+            res.append(currentLine)
+            currentLine = [word]
+            currentWidth = (len(word) + 1) * charWidth
+    res.append(currentLine)
+    return res
+
     
 # if round ends, wait for some time and get to the shop
 
@@ -92,7 +107,7 @@ def checkWord(app):
         app.mult += 1
     else: 
         app.mistakeNum += 1
-        app.mistakes.append( (app.currentIndex, app.currentInput) )
+        app.mistakes[app.currentIndex] =  app.currentInput
         app.streak = 0
         app.mult = max(app.mult/2, 1)
 
