@@ -1,4 +1,4 @@
-import cmu_graphics
+from cmu_graphics import *
 import constants
 import words
 import string
@@ -99,6 +99,7 @@ def onKeyPress(app, key):
         
 '''
 Change balance (mult) here
+do class thing, do booster, do onMistake, etc. 
 '''
 def checkWord(app):
     if app.currentInput == app.words[app.currentIndex]: 

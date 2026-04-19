@@ -25,11 +25,3 @@ def generateWordList(numWords, hard=False, punc = False) -> list[str]:
         res[-1] += random.choice(['.', '!', '?'])
 
     return res
-
-
-# print(generateWordList(100, hard=True))
-# print('--------------------------------------------------------------------')
-# print(generateWordList(100))
-# print('--------------------------------------------------------------------')
-# print(generateWordList(100, punc=True))
-

@@ -42,15 +42,26 @@ def drawRound(app):
              fill = 'black', lineWidth = 10)
     
     drawWords(app) # and drawCursor integrated within
+    drawChipMult(app)
+
+
+def drawChipMult(app):
+    y = 270
+    drawRect(app.width//2, y, 30, 30, align = 'center', fill = 'white')
+    drawLabel('X', app.width//2, y, bold = True, size = 30, font = 'monospace')
+
+    drawRect(app.width//2 - 250, y, 300, 100, align = 'center', fill = 'white')
+    drawLabel(f'Chip: {app.chips}', app.width//2 - 250, y, align = 'center',
+              bold = True, size = 40, font = 'monospace')
     
-    # chips, mult
-    # word row, cursor
-    # cursor, vector, animation
-    # change line
+    drawRect(app.width//2 + 250, y, 300, 100, align = 'center', fill = 'white')
+    drawLabel(f'Mult: {app.mult}', app.width//2 + 250, y, align = 'center',
+              bold = True, size = 40, font = 'monospace')
+
 
 
 def drawWords(app): # and drawCursor integrated within
-    drawRect(app.width//2, 500, 800, 400, align = 'center', fill = 'white')
+    drawRect(app.width//2, 500, 800, 300, align = 'center', fill = 'white')
     lineLeft, lineTop, lineHeight = app.width//2-350, 400+50, 40
     currentLineIndex = 0
     count = 0
