@@ -24,11 +24,19 @@ def startGame(app):
 
 def startRound(app):
 
+    '''
+    Redo. 
+    app.params
+    for booster in boosters that I currently hold, 
+    run booster.onRoundStart
+    '''
+
     app.currentInput = '' # current word typed
     app.currentIndex = 0 # index of current word typing (+=1 when spacebar pressed)
     app.timeLeft = constants.timerLen # in second
     app.mistakeNum = 0
     app.mistakes = dict() # index wrong words
+    
     
     app.chips = 0
     app.streak = 0
@@ -97,11 +105,9 @@ def onKeyPress(app, key):
     elif key == 'backspace': 
         app.currentInput = app.currentInput[:-1]
         
-'''
-Change balance (mult) here
-do class thing, do booster, do onMistake, etc. 
-'''
+
 def checkWord(app):
+    'redo. same as above'
     if app.currentInput == app.words[app.currentIndex]: 
         app.chips += constants.chipsPerWord
         app.streak += 1

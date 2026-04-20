@@ -7,3 +7,5 @@ height = int(1116 * 0.8)
 
 fontSize = 26
 charWidth = 16
+
+scoreRequirement = [500, 1200, 2800, 6000, 12000]
