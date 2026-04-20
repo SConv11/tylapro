@@ -1,5 +1,12 @@
 import string
 
+# AI is partly used for forming all these class. 
+# I had these info in a markdown file. 
+# and used AI to rewrite them into these classes. 
+# since they are essentially all repetitive and copy paste work.
+
+# All functions and class structures related
+# to booster mechanisms are written on my own.
 
 class Booster:
     def __init__(self, name, description, cost):
