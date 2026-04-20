@@ -26,7 +26,7 @@ def startRound(app):
 
     '''
     Redo. 
-    app.params
+    app.params?
     for booster in boosters that I currently hold, 
     run booster.onRoundStart
     '''
