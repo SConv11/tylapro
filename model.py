@@ -2,7 +2,6 @@ from cmu_graphics import *
 import constants
 import words
 import string
-import time
 
 def onAppStart(app):
     app.gameStarted = False
@@ -10,6 +9,8 @@ def onAppStart(app):
     app.roundStarted = False
     app.shopStarted = False
     app.gameOver = False
+    app.roundEnding = False
+    app.endTimer = 0
 
 
 
@@ -46,7 +47,14 @@ def startRound(app):
 
     app.words = words.generateWordList(100)
     app.lines = splitIntoLines(app.words, 700, constants.charWidth)
-    
+
+    app.lineStartIndices = []
+    count = 0
+    for line in app.lines:
+        app.lineStartIndices.append(count)
+        count += len(line)
+    app.currentLineIndex = 0
+
     app.roundStarted = True
     
 def splitIntoLines(words, boardWidth, charWidth):
@@ -66,12 +74,20 @@ def splitIntoLines(words, boardWidth, charWidth):
     
 # if round ends, wait for some time and get to the shop
 
-def onStep(app):    
-    if app.roundStarted and app.timerStarted:
+def onStep(app):
+    if app.roundStarted and app.timerStarted and not app.roundEnding:
         app.timeLeft -= 1/app.stepsPerSecond
-        if app.timeLeft <= 0.01: 
-            time.sleep(1)
+        if app.timeLeft <= 0:
+            app.timeLeft = 0
+            app.roundEnding = True
+            app.endTimer = app.stepsPerSecond * 2
+
+    if app.roundEnding:
+        app.endTimer -= 1
+        if app.endTimer <= 0:
+            app.roundEnding = False
             app.roundStarted = False
+            app.shopStarted = True
 
 def onMousePress(app, mouseX, mouseY):
     if not app.gameStarted: # on home page
@@ -90,6 +106,9 @@ def onKeyPress(app, key):
 
     # backspace is locked after confirming a word (i.e. pressing space)
 
+    if app.roundEnding:
+        return
+
     if app.roundStarted and not app.timerStarted:
         app.timerStarted = True
 
@@ -99,6 +118,10 @@ def onKeyPress(app, key):
             checkWord(app)
             app.currentInput = ''
             app.currentIndex += 1
+            nextLine = app.currentLineIndex + 1
+            if (nextLine < len(app.lineStartIndices) and
+                app.currentIndex >= app.lineStartIndices[nextLine]):
+                app.currentLineIndex = nextLine
             
     elif key in string.ascii_letters+'.,!?;:' :
         app.currentInput += key

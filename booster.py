@@ -5,6 +5,10 @@ import string
 # and used AI to rewrite them into these classes. 
 # since they are essentially all repetitive and copy paste work.
 
+# The "Hook" mechanism is proposed by AI. 
+# i.e. store all the booster mechanisms in method of booster class
+# and call the methods through the hook
+
 # All functions and class structures related
 # to booster mechanisms are written on my own.
 
@@ -14,6 +18,7 @@ class Booster:
         self.description = description
         self.cost = cost
 
+    # Hooks
     def onRoundStart(self, app): pass
     def onRoundEnd(self, app): pass
     def onCorrectWord(self, app, word): pass
