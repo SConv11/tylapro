@@ -259,8 +259,14 @@ def drawShop(app):
         fill = 'lightGray' if sold else ('white' if affordable else 'pink')
         btn.draw(fill=fill)
 
-        drawLabel(item.name, btn.cx, btn.cy - btn.h / 2 + 30,
-                  size=20, bold=True, font='monospace', align='center')
+
+        descLabel = wrapText(item.name, 18)
+        baseY = btn.cy-btn.h/2 + 30
+        for li, line in enumerate(descLabel):
+            drawLabel(line, btn.cx, baseY + li * 16, 
+                      size=20, bold=True, font='monospace', align='center')
+        # drawLabel(item.name, btn.cx, btn.cy - btn.h / 2 + 30,
+        #           size=20, bold=True, font='monospace', align='center')
 
         descLines = wrapText(item.description, 18)
         baseY = btn.cy - 10 - (len(descLines) - 1) * 8
@@ -316,8 +322,44 @@ def drawShop(app):
 
 
 
+def getScoreButton(app):
+    return Button(app.width // 2, app.height - 80, 220, 60, label='Play Again')
+
 def drawScore(app):
-    pass
+    text = 'YOU WIN!' if app.won else 'GAME OVER'
+    color = 'green' if app.won else 'red'
+    drawLabel(text, app.width // 2, 300,
+              size=72, bold=True, font='monospace', fill=color)
+
+    roundReached = app.runIndex + 1
+    totalRounds = len(app.scoreRequirement)
+    drawLabel(f'Round {roundReached} / {totalRounds}',
+              app.width // 2, 400,
+              size=28, font='monospace', fill='white')
+
+    if app.lastStats is not None:
+        s = app.lastStats
+        stats = [
+            ('Score',    f'{int(s["score"])}'),
+            ('Chips',    f'{int(s["chips"])}'),
+            ('Mult',     f'{s["mult"]:.1f}x'),
+            ('Mistakes', f'{s["mistakes"]}'),
+            ('Accuracy', f'{s["accuracy"] * 100:.0f}%'),
+            ('WPM',      f'{s["wpm"]:.0f}'),
+        ]
+        cardW, cardH = 125, 90
+        gap = 20
+        totalW = len(stats) * cardW + (len(stats) - 1) * gap
+        startX = (app.width - totalW) / 2
+        y = 500
+        for i, (label, val) in enumerate(stats):
+            cx = startX + i * (cardW + gap) + cardW / 2
+            drawRect(cx, y, cardW, cardH, align='center', fill='white', border='black')
+            drawLabel(label, cx, y - 18, size=18, font='monospace', fill='black')
+            drawLabel(val, cx, y + 16, size=26, bold=True, font='monospace', fill='black')
+
+    btn = getScoreButton(app)
+    btn.draw(fill='seaGreen', labelColor='white', labelSize=26, bold=True)
 
 
 

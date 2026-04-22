@@ -104,11 +104,11 @@ class NativeSpeaker(Kernel):
     def __init__(self):
         super().__init__('Native Speaker',
                          'Expand the wordbank, words get harder, '
-                         'chips per word +5',
+                         'chips per word +10',
                          15)
     def onRoundStart(self, app):
         app.hardMode = True
-        app.chipsPerWord += 5
+        app.chipsPerWord += 10
 
 class KeepCalm(Kernel):
     def __init__(self):

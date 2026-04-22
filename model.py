@@ -183,6 +183,11 @@ def onMousePress(app, mouseX, mouseY):
             startGame(app)
         return
 
+    if app.gameOver:
+        if view.getScoreButton(app).contains(mouseX, mouseY):
+            startGame(app)
+        return
+
     if app.shopStarted:
         itemButtons, nextBtn = view.getShopButtons(app)
         for i, btn in enumerate(itemButtons):
