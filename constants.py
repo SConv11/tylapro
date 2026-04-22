@@ -9,3 +9,9 @@ fontSize = 26
 charWidth = 16
 
 scoreRequirement = [500, 1200, 2800, 6000, 12000]
+
+# Shop item draw weights (macros are individually less likely than kernels
+# so the 26 macros don't dominate the 4-slot shop)
+kernelWeight = 1.0
+macroWeight = 0.5
+shopSize = 4
