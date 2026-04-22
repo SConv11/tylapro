@@ -79,7 +79,9 @@ def startRound(app):
     
 
 def startShop(app):
-    # Pool = unowned kernels + unowned macros, weighted so macros are rarer
+    # Pool = unowned kernels + unowned macros, weighted so macros are rarer.
+    # Weighted sampling without replacement: after each pick, pop both the
+    # chosen item and its weight so it can't be selected again.
     kernelPool = [k for k in booster.KERNELS if k not in app.boosters]
     macroPool  = [m for m in booster.MACROS  if m not in app.boosters]
     pool    = kernelPool + macroPool
@@ -104,6 +106,8 @@ def rebuildLines(app):
         app.lineStartIndices.append(count)
         count += len(line)
     
+# Greedy word-wrap: accumulates pixel width (character count + 1 space) and
+# starts a new line whenever the next word would exceed boardWidth.
 def splitIntoLines(words, boardWidth, charWidth):
     currentLine = []
     res = []
@@ -111,7 +115,7 @@ def splitIntoLines(words, boardWidth, charWidth):
     for word in words:
         currentWidth += (len(word) + 1) * charWidth
         if currentWidth <= boardWidth: currentLine.append(word)
-        else: 
+        else:
             res.append(currentLine)
             currentLine = [word]
             currentWidth = (len(word) + 1) * charWidth
@@ -246,7 +250,7 @@ def checkWord(app):
         app.mistakes[app.currentIndex] = app.currentInput
         app.streak = 0
         prevMult = app.mult
-        app.mult = max(app.mult/2, 1)
+        app.mult = max(app.mult/2, 1)  # halve mult on mistake, floor at 1
         app.lastMistakeLoss = prevMult - app.mult
         for b in app.boosters:
             b.onMistake(app)

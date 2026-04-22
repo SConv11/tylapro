@@ -72,6 +72,8 @@ def drawChipMult(app):
 
 
 
+# Renders words character-by-character: past mistakes show per-char diff
+# (black=correct, red=wrong, gray=missing); current word also draws the cursor.
 def drawWords(app): # and drawCursor integrated within
     drawRect(app.width//2, 500, 800, 300, align = 'center', fill = 'white')
     lineLeft, lineTop, lineHeight = app.width//2-350, 400+50, 40
@@ -167,6 +169,8 @@ NEXT_BTN_W, NEXT_BTN_H = 220, 70
 
 # Written by AI
 
+# Computes centered card positions for a variable number of shop items. 
+# Create var / obj under button class
 def getShopButtons(app):
     n = len(app.shopItems)
     totalW = n * SHOP_CARD_W + max(0, n - 1) * SHOP_CARD_GAP
@@ -273,6 +277,8 @@ def drawShop(app):
                       size=52, bold=True, fill='red', font='monospace')
 
     # --- owned boosters strip ---
+    # Chip-packing: draw booster name badges left-to-right; if the next chip
+    # would overflow maxX, show "+N more" and stop.
     ownedY = 680
     drawLabel(f'Owned ({len(app.boosters)}):',
               leftBound + 30, ownedY-40,
