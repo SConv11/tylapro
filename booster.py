@@ -1,9 +1,14 @@
 import string
+import random
 
 # AI is partly used for forming all these class. 
 # I had these info in a markdown file. 
 # and used AI to rewrite them into these classes. 
 # since they are essentially all repetitive and copy paste work.
+
+# The "Hook" mechanism is proposed by AI. 
+# i.e. store all the booster mechanisms in method of booster class
+# and call the methods through the hook
 
 # All functions and class structures related
 # to booster mechanisms are written on my own.
@@ -14,6 +19,7 @@ class Booster:
         self.description = description
         self.cost = cost
 
+    # Hooks
     def onRoundStart(self, app): pass
     def onRoundEnd(self, app): pass
     def onCorrectWord(self, app, word): pass
@@ -30,14 +36,15 @@ class Boss(Booster):
 
 
 class Macro(Booster):
-    # for now, difference between macro is the letter. 
+    # for now, difference between macro is the letter.
     def __init__(self, letter):
         super().__init__(f"Macro '{letter}'",
                          f"For every word containing '{letter}', chip +2",
                          4)
         self.letter = letter
     def onCorrectWord(self, app, word):
-        pass
+        if self.letter in word.lower():
+            app.chips += 2
 
 
 # ---------- Kernels -------------------------------------------
@@ -47,8 +54,13 @@ class CarpeDiem(Kernel):
         super().__init__('Carpe Diem',
                          'Allow 2 mistyped words before mult deducts',
                          10)
+        self.freeMistakes = 2
+    def onRoundStart(self, app):
+        self.freeMistakes = 2
     def onMistake(self, app):
-        pass
+        if self.freeMistakes > 0:
+            app.mult += app.lastMistakeLoss
+            self.freeMistakes -= 1
 
 
 class Coffee(Kernel):
@@ -57,7 +69,7 @@ class Coffee(Kernel):
                          'More concentration, time slows down, +10s',
                          18)
     def onRoundStart(self, app):
-        pass
+        app.timeLeft += 10
 
 
 class ChainReaction(Kernel):
@@ -66,7 +78,8 @@ class ChainReaction(Kernel):
                          'Every time streak reaches a multiple of 5, mult +5',
                          20)
     def onCorrectWord(self, app, word):
-        pass
+        if app.streak > 0 and app.streak % 5 == 0:
+            app.mult += 5
 
 class PunctuationPro(Kernel):
     def __init__(self):
@@ -75,9 +88,17 @@ class PunctuationPro(Kernel):
                          'capitalized letters yield double chips',
                          12)
     def onRoundStart(self, app):
-        pass
+        app.punctuationMode = True
     def onCorrectWord(self, app, word):
-        pass
+
+        found = False
+        for c in word:
+            if c in '.,!?;:' or c.isupper():
+                found = True
+                break
+
+        if found:
+            app.chips += app.chipsPerWord
 
 class NativeSpeaker(Kernel):
     def __init__(self):
@@ -86,7 +107,8 @@ class NativeSpeaker(Kernel):
                          'chips per word +5',
                          15)
     def onRoundStart(self, app):
-        pass
+        app.hardMode = True
+        app.chipsPerWord += 5
 
 class KeepCalm(Kernel):
     def __init__(self):
@@ -94,9 +116,19 @@ class KeepCalm(Kernel):
                          'Regain half of lost mult if word is typed correctly '
                          'after a mistyped word',
                          8)
-    # self.lastWasMistake
+        self.lastWasMistake = False
+        self.lastLoss = 0
+    def onRoundStart(self, app):
+        self.lastWasMistake = False
+        self.lastLoss = 0
+    def onMistake(self, app):
+        self.lastWasMistake = True
+        self.lastLoss = app.lastMistakeLoss
     def onCorrectWord(self, app, word):
-        pass
+        if self.lastWasMistake:
+            app.mult += self.lastLoss / 2
+            self.lastWasMistake = False
+            self.lastLoss = 0
 
 
 class WritingSession(Kernel):
@@ -105,15 +137,9 @@ class WritingSession(Kernel):
                          'Every word you are going to type will appear twice',
                          15)
     def onRoundStart(self, app):
-        pass
+        app.doubleWords = True
 
 
-class ClearanceSale(Kernel):
-    def __init__(self):
-        super().__init__('Clearance Sale',
-                         'Every kernel/macro gets a 25% discount',
-                         20)
-        # on Shop
 
 
 class CompoundInterest(Kernel):
@@ -122,7 +148,7 @@ class CompoundInterest(Kernel):
                          'After round ends, every $5 gives $1 interest',
                          12)
     def onRoundEnd(self, app):
-        pass
+        app.money += app.money // 5
 
 
 class Wowel(Kernel):
@@ -130,8 +156,8 @@ class Wowel(Kernel):
         super().__init__('Wowel',
                          'Wow, vowels! Every vowel typed gives +1 chip',
                          7)
-    def onCorrectWord(self, app):
-        pass
+    def onCorrectWord(self, app, word):
+        app.chips += sum([1 for c in word.lower() if c in 'aeiou'])
 
 
 class ImportRandom(Kernel):
@@ -141,7 +167,7 @@ class ImportRandom(Kernel):
                          'value (ranges from 0 to 10)',
                          5)
     def onRoundStart(self, app):
-        pass
+        app.chipsPerWord = random.randint(0, 10)
 
 
 class BuyingPower(Kernel):
@@ -150,34 +176,42 @@ class BuyingPower(Kernel):
                          'Every $5 held adds 1 base chip',
                          14)
     def onRoundStart(self, app):
-        pass
+        app.chipsPerWord += app.money // 5
 
 # ------- Bosses -----------------------------------------
 
 class DDL(Boss):
     def __init__(self):
         super().__init__('DDL', 'You only get half the time')
+    def onRoundStart(self, app):
+        app.timeLeft /= 2
 
 
 class OverheatUnderclock(Boss):
     def __init__(self):
         super().__init__('Overheat. Underclock.', 'Base chips are halved')
+    def onRoundStart(self, app):
+        app.chipsPerWord = max(app.chipsPerWord // 2, 1)
 
 
 class ItIsWhatItIs(Boss):
     def __init__(self):
         super().__init__('It Is What It Is', 'No backspace')
+    def onRoundStart(self, app):
+        app.noBackspace = True
 
 
 class TheBigTheorem(Boss):
     def __init__(self):
         super().__init__('The Big Theorem', 'Double score requirements')
+    def onRoundStart(self, app):
+        app.scoreMultiplier = 2
 
 
 #------------------------------------------------------------------------------
 
 KERNELS = [CarpeDiem(), Coffee(), ChainReaction(), PunctuationPro(),
-           NativeSpeaker(), KeepCalm(), WritingSession(), ClearanceSale(),
+           NativeSpeaker(), KeepCalm(), WritingSession(),
            CompoundInterest(), Wowel(), ImportRandom(), BuyingPower()]
 
 BOSSES = [DDL(), OverheatUnderclock(), ItIsWhatItIs(), TheBigTheorem()]

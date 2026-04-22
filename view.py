@@ -44,6 +44,11 @@ def drawRound(app):
     drawWords(app) # and drawCursor integrated within
     drawChipMult(app)
 
+    if app.roundEnding:
+        drawRect(app.width//2, app.height//2, 400, 100, align='center', fill='black', opacity=80)
+        drawLabel("TIME'S UP!", app.width//2, app.height//2,
+                  size=40, fill='white', bold=True, font='monospace')
+
 
 def drawChipMult(app):
     y = 270
@@ -63,21 +68,9 @@ def drawChipMult(app):
 def drawWords(app): # and drawCursor integrated within
     drawRect(app.width//2, 500, 800, 300, align = 'center', fill = 'white')
     lineLeft, lineTop, lineHeight = app.width//2-350, 400+50, 40
-    currentLineIndex = 0
-    count = 0
 
-    # which line am I at right now
-    for i in range(len(app.lines)):
-        line = app.lines[i]
-        count += len(line)
-        if count > app.currentIndex:
-            currentLineIndex = i
-            break
-    
-    wordIndex = 0
-    startLine = max(0, currentLineIndex -1)
-    for i in range(0, startLine):
-        wordIndex += len(app.lines[i])
+    startLine = max(0, app.currentLineIndex - 1)
+    wordIndex = app.lineStartIndices[startLine]
     
     # draw each line
     for row in range(3):
