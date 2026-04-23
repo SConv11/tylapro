@@ -45,7 +45,7 @@ def drawHome(app):
 def drawRound(app):
     # top bar, timer as a shrinking bar
     drawLine(leftBound, upperBound+5,
-             leftBound + boardWidth * app.timeLeft / constants.timerLen,  upperBound+5,
+             leftBound + boardWidth * app.timeLeft / app.roundStartTimer,  upperBound+5,
              fill = 'black', lineWidth = 10)
 
     drawWords(app) # and drawCursor integrated within
@@ -100,18 +100,22 @@ def drawWords(app): # and drawCursor integrated within
                 if wordIndex in app.mistakes:
                     input = app.mistakes[wordIndex]
                     
-                    for i in range(len(word)):
+                    for i in range(max(len(word), len(input))):
                         if i >= len(input):
-                            drawLabel(word[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(word[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'gray')
+                        elif i >= len(word):
+                            drawLabel(input[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
+                                      align = 'left', fill = 'red')
                         elif input[i] == word[i]:
-                            drawLabel(input[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(input[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'black')
                         else:
-                            drawLabel(input[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(input[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'red')
 
                 else: drawLabel(word + ' ', x, y, size = constants.fontSize, 
@@ -119,18 +123,22 @@ def drawWords(app): # and drawCursor integrated within
             
             # current word. draw cursor as well. 
             else: 
-                    for i in range(len(word)):
+                    for i in range(max(len(word), len(app.currentInput))):
                         if i >= len(app.currentInput):
-                            drawLabel(word[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(word[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'gray')
+                        elif i >= len(word):
+                            drawLabel(app.currentInput[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
+                                      align = 'left', fill = 'red')
                         elif app.currentInput[i] == word[i]:
-                            drawLabel(app.currentInput[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(app.currentInput[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'black')
                         else:
-                            drawLabel(app.currentInput[i], x+i*constants.charWidth, y, 
-                                      size = constants.fontSize, font = 'monospace', 
+                            drawLabel(app.currentInput[i], x+i*constants.charWidth, y,
+                                      size = constants.fontSize, font = 'monospace',
                                       align = 'left', fill = 'red')
                     
                     cursorX = x + len(app.currentInput) * constants.charWidth

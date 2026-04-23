@@ -15,6 +15,8 @@ def generateWordList(numWords, hard=False, punc = False) -> list[str]:
         wordbank = json.load(f)["words"]
     res = random.choices(wordbank, k=numWords)
 
+    res = [word.lower() for word in res]
+
     if punc:
         res[0] = res[0][0].upper() + res[0][1:]
         for i in range(len(res)-1):

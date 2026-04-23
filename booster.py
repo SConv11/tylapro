@@ -85,7 +85,7 @@ class PunctuationPro(Kernel):
     def __init__(self):
         super().__init__('Punctuation Pro',
                          'Enable punctuation mode. Words with punctuation or '
-                         'capitalized letters yield double chips',
+                         'capitalized letters yield 10 more chips',
                          12)
     def onRoundStart(self, app):
         app.punctuationMode = True
@@ -98,17 +98,17 @@ class PunctuationPro(Kernel):
                 break
 
         if found:
-            app.chips += app.chipsPerWord
+            app.chips += 10
 
 class NativeSpeaker(Kernel):
     def __init__(self):
         super().__init__('Native Speaker',
                          'Expand the wordbank, words get harder, '
-                         'chips per word +10',
+                         'chips per word +15',
                          15)
     def onRoundStart(self, app):
         app.hardMode = True
-        app.chipsPerWord += 10
+        app.chipsPerWord += 15
 
 class KeepCalm(Kernel):
     def __init__(self):
@@ -182,9 +182,9 @@ class BuyingPower(Kernel):
 
 class DDL(Boss):
     def __init__(self):
-        super().__init__('DDL', 'You only get half the time')
+        super().__init__('DDL', 'You get 5 seconds less')
     def onRoundStart(self, app):
-        app.timeLeft /= 2
+        app.timeLeft -= 5
 
 
 class OverheatUnderclock(Boss):
