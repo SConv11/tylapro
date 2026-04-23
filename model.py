@@ -17,6 +17,9 @@ def onAppStart(app):
     app.endTimer = 0
     app.lastStats = None
 
+    app.cheatMode = False
+    app.cheatInput = ''
+
     app.scoreMultiplier = 1
     app.scoreRequirement = [500, 1200, 2800, 6000, 12000]
 
@@ -205,6 +208,60 @@ def onMousePress(app, mouseX, mouseY):
             app.runIndex += 1
             startRound(app)
 
+def executeCheat(app):
+
+    def get(app, args):
+        if len(args) > 0:
+            arg = args[0] 
+        else: return
+
+        pool = [b for b in booster.KERNELS + booster.MACROS
+                if b not in app.boosters]
+        for item in pool: 
+            if item.name.lower().startswith(arg):
+                app.boosters.append(item)
+                return
+
+    def skip(app, args):
+        if app.roundStarted and not app.roundEnding:
+            app.timerStarted = True
+            app.timeLeft = 0
+
+    def win(app, args):
+        if not app.roundStarted or app.roundEnding:
+            return
+        required = app.scoreRequirement[app.runIndex] * app.scoreMultiplier
+        score = required
+        app.chips = score
+        app.mult = 1
+        app.timerStarted = True
+        app.timeLeft = 0
+
+    cheats = {
+        'get':   get,
+        'skip':  skip,
+        'win':   win,
+    }
+
+    cleaned = app.cheatInput.lower()
+    cleaned = cleaned.replace('backspace', '')
+    cleaned = cleaned.replace('space', ' ')
+    cleaned = cleaned.strip()
+    if len(cleaned)==0:
+        return
+    tokens = cleaned.split()
+    if len(tokens) == 0:
+        return
+    command, args = tokens[0], tokens[1:]
+
+    # AI used for the try&except lines. 
+
+    for key, fn in cheats.items():                                               
+          if key in command:
+              try: fn(app, args)
+              except Exception: pass
+              return
+
 
 '''
 MAKE SURE YOU ARE USING ENGLISH KEYBOARD
@@ -212,19 +269,30 @@ MAKE SURE YOU ARE USING ENGLISH KEYBOARD
 def onKeyPress(app, key):
     # control + backspace
     # long press backspace
-
     # backspace is locked after confirming a word (i.e. pressing space)
 
-    if not app.roundStarted:
+    # CheatMode
+    if key == '`':
+        app.cheatMode = True
         return
-    if app.roundEnding:
+    if app.cheatMode:
+        if key == 'enter':
+            executeCheat(app)
+            app.cheatMode = False
+            app.cheatInput = ''
+        else: app.cheatInput += key
         return
 
+    # Not typing. Typing won't work
+    if not app.roundStarted or app.roundEnding:
+        return
+
+    # Type to start timer. 
     if not app.timerStarted:
         app.timerStarted = True
 
+    # Literally typing
     if key == 'space':
-
         if app.currentInput != '':
             checkWord(app)
             app.currentInput = ''
@@ -233,7 +301,6 @@ def onKeyPress(app, key):
             if (nextLine < len(app.lineStartIndices) and
                 app.currentIndex >= app.lineStartIndices[nextLine]):
                 app.currentLineIndex = nextLine
-            
     elif key in string.ascii_letters+'.,!?;:' :
         app.currentInput += key
     elif key == 'backspace' and not app.noBackspace:

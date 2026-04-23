@@ -92,4 +92,13 @@ constants.py   tuning values (timer, chips, weights, screen size)
 - [cmu_graphics](https://academy.cs.cmu.edu/desktop)
 
 ## Developer Cheat Mode
-To be continued...
+
+Press **`** (backtick) during play to enter cheat mode, type a command, then press **Enter** to execute. Input is normalized (lowercased, whitespace stripped) so minor typing noise is tolerated.
+
+| Command | Effect |
+|---------|--------|
+| `get <prefix>` | Grant the first unowned booster whose name starts with `<prefix>`. E.g. `get car` → Carpe Diem, `get co` → Coffee. |
+| `skip` | End the current round immediately. Scoring still applies — you win if chips × mult meets the target, otherwise you lose. |
+| `win` | Set chips/mult so the round auto-passes its score requirement, then end the round. |
+
+Unknown or empty commands are no-ops. Handler exceptions are swallowed so a broken cheat cannot crash the game.
