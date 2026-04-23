@@ -21,7 +21,7 @@ Run `python main.py`. Make sure you are using an **English keyboard layout**.
 | 2     | 1,200       |
 | 3     | 2,800       |
 | 4     | 6,000       |
-| 5     | 12,000      |
+| 5     | 10,000      |
 
 Round 5 always features a randomly chosen **Boss** with a debuff. Beat it to win.
 
@@ -44,8 +44,8 @@ After each round (except the last), you earn money and enter a shop:
 | Carpe Diem | First 2 mistakes don't penalize mult | $10 |
 | Coffee | +10 seconds to the round timer | $18 |
 | Chain Reaction | Every 5-word streak milestone gives mult +5 | $20 |
-| Punctuation Pro | Enables punctuation mode; punctuated/capitalized words yield double chips | $12 |
-| Native Speaker | Hard word bank, chips per word +10 | $15 |
+| Punctuation Pro | Enables punctuation mode; punctuated/capitalized words yield +10 chips | $12 |
+| Native Speaker | Hard word bank, chips per word +15 | $15 |
 | Keep Calm and Do Your Work | Regain half of lost mult on the next correct word after a mistake | $8 |
 | Writing Session | Every word appears twice in sequence | $15 |
 | Compound Interest | After a round, every $5 held earns $1 interest | $12 |
@@ -63,7 +63,7 @@ One macro exists for each letter of the alphabet (a–z). Each costs $4.
 
 | Name | Debuff |
 |------|--------|
-| DDL | Round timer is halved |
+| DDL | Round timer loses 5 seconds |
 | Overheat. Underclock. | Base chips per word are halved |
 | It Is What It Is | Backspace is disabled |
 | The Big Theorem | Score requirement is doubled |
